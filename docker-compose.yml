@@ -1,0 +1,24 @@
+version: '2'
+
+volumes:
+    config:
+
+services:
+  plexamp:
+    privileged: true
+    image: ghcr.io/anatosun/plexamp:latest
+    devices:
+      - "/dev/snd:/dev/snd"
+    volumes:
+      - config:/root/.local/share/Plexamp/Settings
+    ports:
+      - 80:32500
+      - 20000:20000
+    network_mode: host
+    restart: unless-stopped
+  browser:
+    image: bh.cr/balenalabs/browser-aarch64 # where <arch> is one of aarch64, arm32 or amd64
+    privileged: true # required for UDEV to find plugged in peripherals such as a USB mouse
+    ports:
+        - '5011' # management API (optional)
+        - '35173' # Chromium debugging port (optional)
